@@ -13,6 +13,6 @@ return function(c, o)
     -- file orange. Real constants still come through @lsp.type.enumMember etc.
     ["@lsp.typemod.variable.readonly"] = vim.tbl_extend("force", { fg = c.fg }, o.styles.constants),
     ["@lsp.type.keyword"] = { link = "@keyword" },
-    ["@lsp.type.unresolvedReference"] = { sp = c.diag.error, undercurl = true },
+    ["@lsp.type.unresolvedReference"] = { sp = c.tender.red1, undercurl = true },
   }
 end

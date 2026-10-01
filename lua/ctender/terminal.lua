@@ -40,7 +40,7 @@ function M.ansi(c)
     bright(c.blue),
     bright(c.azure),
     bright(c.cyan),
-    light and util.darken(c.fg, 0.3) or util.lighten(c.fg, 0.4),
+    c.fg_max, -- tender highlighted
   }
 end
 

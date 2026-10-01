@@ -10,12 +10,12 @@
 <g clip-path="url(#left)">
 <text x="640" y="200" text-anchor="middle" font-family="'Inter','SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif" font-size="112" font-weight="700" letter-spacing="-3" fill="#4b4b4b">ctender</text>
 <text x="640" y="258" text-anchor="middle" font-family="'Inter','SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif" font-size="24" fill="#4b4b4b" letter-spacing="0.5">tender, quieted down · tan strings, lime functions, red only for errors</text>
-<text x="640" y="372" text-anchor="middle" font-family="'JetBrains Mono','SF Mono','Cascadia Code',Menlo,Consolas,monospace" font-size="17" fill="#878787" letter-spacing="4">NEOVIM · GHOSTTY · KITTY · LAZYGIT</text>
+<text x="640" y="372" text-anchor="middle" font-family="'JetBrains Mono','SF Mono','Cascadia Code',Menlo,Consolas,monospace" font-size="17" fill="#898989" letter-spacing="4">NEOVIM · GHOSTTY · KITTY · LAZYGIT</text>
 </g>
 <g clip-path="url(#right)">
 <text x="640" y="200" text-anchor="middle" font-family="'Inter','SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif" font-size="112" font-weight="700" letter-spacing="-3" fill="#dadada">ctender</text>
 <text x="640" y="258" text-anchor="middle" font-family="'Inter','SF Pro Display','Segoe UI',Helvetica,Arial,sans-serif" font-size="24" fill="#dadada" letter-spacing="0.5">tender, quieted down · tan strings, lime functions, red only for errors</text>
-<text x="640" y="372" text-anchor="middle" font-family="'JetBrains Mono','SF Mono','Cascadia Code',Menlo,Consolas,monospace" font-size="17" fill="#818181" letter-spacing="4">NEOVIM · GHOSTTY · KITTY · LAZYGIT</text>
+<text x="640" y="372" text-anchor="middle" font-family="'JetBrains Mono','SF Mono','Cascadia Code',Menlo,Consolas,monospace" font-size="17" fill="#808080" letter-spacing="4">NEOVIM · GHOSTTY · KITTY · LAZYGIT</text>
 </g>
 <circle cx="526" cy="310" r="9" fill="#7a612e"/>
 <circle cx="564" cy="310" r="9" fill="#506e13"/>

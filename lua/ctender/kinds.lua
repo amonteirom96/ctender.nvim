@@ -2,8 +2,8 @@
 --- Shared by blink.cmp, dropbar and anything else that shows kinds, so the same
 --- symbol has the same color everywhere. Functions green (lime), strings yellow
 --- (tan), types cyan (sky) and constants orange (amber), exactly as in the
---- code. Fields take tender's pale blue, modules and keywords its teal. No red
---- (red is for errors) and no purple.
+--- code. Fields take tender's pale blue, modules and keywords its teal,
+--- snippets its olive. No red (red is for errors) and no purple.
 return {
   Text = "muted",
   Method = "green",
@@ -19,7 +19,7 @@ return {
   Value = "orange",
   Enum = "orange",
   Keyword = "azure",
-  Snippet = "yellow",
+  Snippet = "olive",
   Color = "orange",
   File = "fg",
   Reference = "blue",

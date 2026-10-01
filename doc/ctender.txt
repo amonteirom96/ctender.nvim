@@ -78,10 +78,15 @@ Defaults:
                                                           *ctender-on_colors*
 on_colors(colors, variant)
     Change the palette before highlights are built. Keys: `bg`, `fg`, `red`,
-    `orange`, `yellow`, `green`, `cyan`, `azure`, `blue`, `accent`,
-    `surface1`, `surface2`, `surface3`, `select`, `border`, `muted`, `comment`,
-    `bg_dim`, `bg_float`, `code.{string,func,type,constant}`,
-    `git.{add,change,delete}`, `diag.{error,warn,info,hint,ok}`.
+    `orange`, `yellow`, `green`, `cyan`, `azure`, `blue`, `olive`, `accent`,
+    `fg_strong`, `fg_max`, `subtle`, `faint`, `surface1`, `surface2`,
+    `surface3`, `select`, `border`, `muted`, `comment`, `bg_dim`, `bg_fold`,
+    `bg_float`, `shadow`, `search`, `code.{string,func,type,constant}`,
+    `git.{add,change,delete,staged}`, `diff.{add,change,delete,text,text_add}`,
+    `diag.{error,warn,info,hint,ok}`, and `tender.<name>`: all 27 tender
+    colors by tender's names (`red1`..`red3`, `blue1`..`blue5`,
+    `green1`..`green4`, `yellow1`..`yellow3`, `highlighted`, `text`, `pearl`,
+    `gandalf`, `grey1`..`grey3`, `shadow`, `bg`, `dark`, `darker`, `darkest`).
 
                                                                *ctender-mono*
 mono

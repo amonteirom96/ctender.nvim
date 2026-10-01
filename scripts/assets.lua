@@ -100,7 +100,7 @@ local MENU = {
   { "hue", "Variable", "fg", "x" },
   { "hsl", "Class", "cyan", "C" },
   { "http", "Module", "azure", "M" },
-  { "hash", "Snippet", "yellow", "S" },
+  { "hash", "Snippet", "olive", "S" },
 }
 
 local function editor(c, ox, oy, w, h, label)
@@ -183,7 +183,7 @@ local function editor(c, ox, oy, w, h, label)
   for j, item in ipairs(MENU) do
     local iy = my + 6 + (j - 1) * 24
     if j == 1 then
-      add('<rect x="%d" y="%d" width="%d" height="24" fill="%s"/>', mx + 1, iy, mw - 2, c.surface2)
+      add('<rect x="%d" y="%d" width="%d" height="24" fill="%s"/>', mx + 1, iy, mw - 2, c.select)
     end
     local kind = c[item[3]]
     add('<rect x="%d" y="%d" width="16" height="16" rx="4" fill="%s"/>', mx + 10, iy + 4, util.blend(kind, c.bg, 0.2))
@@ -198,8 +198,9 @@ local function editor(c, ox, oy, w, h, label)
   -- statusline
   local sy = oy + h - 34
   add('<rect x="%d" y="%d" width="%d" height="34" fill="%s"/>', ox + 1, sy, w - 2, c.surface2)
-  add('<rect x="%d" y="%d" width="70" height="34" fill="%s"/>', ox + 1, sy, c.blue)
-  add('<text x="%d" y="%d" fill="%s" font-weight="700">NOR</text>', ox + 20, sy + 22, c.bg)
+  local mode = ex.highlights(c.variant).StModeNormal
+  add('<rect x="%d" y="%d" width="70" height="34" fill="%s"/>', ox + 1, sy, mode.bg)
+  add('<text x="%d" y="%d" fill="%s" font-weight="700">NOR</text>', ox + 20, sy + 22, mode.fg)
   add('<text x="%d" y="%d" fill="%s">[ctender]  <tspan fill="%s">E:1</tspan> <tspan fill="%s">W:2</tspan></text>', ox + 86, sy + 22, c.blue, c.diag.error, c.diag.warn)
   add('<text x="%d" y="%d" fill="%s" text-anchor="end"><tspan fill="%s"> main</tspan>  <tspan fill="%s">●</tspan> lua  8:14</text>', ox + w - 16, sy + 22, c.fg, c.green, c.blue)
   add("</g>")

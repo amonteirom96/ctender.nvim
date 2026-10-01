@@ -1,6 +1,8 @@
 --- Groups for a hand-written statusline (`%#StModeNormal#`, `%#StGit#`, ...).
 --- Each mode gets a filled block plus a `Sep` group for the powerline edge.
 
+local util = require("ctender.util")
+
 ---@param c ctender.Colors
 ---@param o ctender.Config
 return function(c, o)
@@ -15,19 +17,24 @@ return function(c, o)
     StLsp = { fg = c.accent, bg = bg },
   }
 
-  -- Modes follow tender's airline theme (normal blue, insert lime, visual
-  -- amber, replace red). No purple in the palette: Command takes azure, like
-  -- ANSI magenta does.
+  -- Modes follow tender's airline theme: normal blue4 on blue1, insert green4
+  -- on green1, visual on amber, replace on red1. No purple in the palette:
+  -- Command takes azure, like ANSI magenta does. When tender's shade is not
+  -- AA on its block (light variant), the text falls back to the most readable
+  -- of bg and black.
+  local t = c.tender
   local modes = {
-    Normal = c.blue,
-    Insert = c.green,
-    Visual = c.orange,
-    Replace = c.red,
-    Command = c.azure,
-    Other = c.cyan,
+    Normal = { c.blue, t.blue4 },
+    Insert = { c.green, t.green4 },
+    Visual = { c.orange },
+    Replace = { t.red1 },
+    Command = { c.azure },
+    Other = { c.cyan },
   }
-  for mode, color in pairs(modes) do
-    hl["StMode" .. mode] = { fg = c.bg, bg = color, bold = true }
+  for mode, m in pairs(modes) do
+    local color, shade = m[1], m[2]
+    local text = (shade and util.contrast(shade, color) >= 4.5) and shade or util.readable(color, c.bg, t.darkest)
+    hl["StMode" .. mode] = { fg = text, bg = color, bold = true }
     hl["StMode" .. mode .. "Sep"] = { fg = color, bg = bg }
   end
 

@@ -3,6 +3,8 @@
 --- are told apart by style (italic/bold, configurable via `styles`). Red appears
 --- only on errors.
 
+local util = require("ctender.util")
+
 ---@param c ctender.Colors
 ---@param o ctender.Config
 return function(c, o)
@@ -68,6 +70,6 @@ return function(c, o)
     Italic = { italic = true },
     Ignore = { fg = c.muted },
     Error = { fg = c.red, bold = true },
-    Todo = { fg = c.bg, bg = c.accent, bold = true },
+    Todo = { fg = util.readable(c.accent, c.bg, c.fg_max), bg = c.accent, bold = true },
   }
 end

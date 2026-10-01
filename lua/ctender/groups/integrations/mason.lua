@@ -3,10 +3,10 @@
 return function(c, o)
   return {
     MasonNormal = { link = "NormalFloat" },
-    MasonBackdrop = { bg = "#000000", blend = 100 },
+    MasonBackdrop = { bg = c.shadow, blend = 100 },
     MasonHeader = { fg = c.bg, bg = c.accent, bold = true },
     MasonHeaderSecondary = { fg = c.bg, bg = c.green, bold = true },
-    MasonHeading = { fg = c.fg, bold = true },
+    MasonHeading = { fg = c.fg_strong, bold = true },
     MasonHighlight = { fg = c.accent },
     MasonHighlightSecondary = { fg = c.green },
     MasonHighlightBlock = { fg = c.bg, bg = c.accent },

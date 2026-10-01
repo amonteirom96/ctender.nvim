@@ -13,7 +13,7 @@ return {
       { "selectedLineBgColor", c.surface2 },
       { "inactiveViewSelectedLineBgColor", c.surface1 },
       { "cherryPickedCommitFgColor", c.bg },
-      { "cherryPickedCommitBgColor", c.cyan },
+      { "cherryPickedCommitBgColor", c.olive },
       { "markedBaseCommitFgColor", c.bg },
       { "markedBaseCommitBgColor", c.orange },
       { "unstagedChangesColor", c.git.delete },

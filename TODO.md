@@ -13,7 +13,8 @@
 ## Paleta
 - [x] Dark: `#282828` (bg do tender) / `#dadada` (pearl do tender). Acentos do tender sem alteração, exceto red e teal, clareados o mínimo para WCAG AA.
 - [x] Light (nova): `#f2f2f2` / `#4b4b4b`, cinza neutro como o tender. Acentos com os tons do tender, escurecidos o mínimo para passar WCAG AA; lima e âmbar deslocados alguns graus para não se confundirem com o bege.
-- [x] Superfícies neutras (como o chrome do tender); só a seleção puxa para o azul (como o `Visual` do tender).
+- [x] **As 27 cores do tender** em `c.tender.<nome>`, todas com função (teste garante): `blue5` seleção, `blue4`/`green4`/`red3` diff, `green3` busca, `yellow3` match paren, `green2` staged/snippets, `red2` FIXME, `gandalf` barras inativas, `grey1` comentários, `grey2` invisíveis, `grey3` bordas, `shadow` cursorline, `dark` folds, `darker` janelas inativas, `darkest` sombras, `text`/`highlighted` ênfase.
+- [x] Verificação de contraste também para todo grupo com texto sobre fundo próprio (seleção, busca, marcadores, modos da statusline).
 - [x] Accent de UI em lima (WildMenu/PmenuSel/TabLineSel do tender).
 - [x] `c.code.{string,func,type,constant}` configurável via `on_colors`.
 - [x] Script de validação de contraste (`scripts/contrast.lua`).

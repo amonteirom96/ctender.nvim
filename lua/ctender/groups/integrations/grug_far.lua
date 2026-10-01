@@ -1,7 +1,6 @@
 ---@param c ctender.Colors
 ---@param o ctender.Config
 return function(c, o)
-  local blend = require("ctender.util").blend
   return {
     GrugFarHelpHeader = { fg = c.muted },
     GrugFarHelpHeaderKey = { fg = c.accent, bold = true },
@@ -23,9 +22,9 @@ return function(c, o)
     GrugFarResultsNumberLabel = { fg = c.muted },
     GrugFarResultsCursorLineNo = { fg = c.fg, bold = true },
     GrugFarResultsLongLineStr = { fg = c.muted },
-    GrugFarResultsMatch = { fg = c.fg, bg = c.search, bold = true },
-    GrugFarResultsMatchAdded = { fg = c.git.add, bg = blend(c.git.add, c.bg, 0.16) },
-    GrugFarResultsMatchRemoved = { fg = c.git.delete, bg = blend(c.git.delete, c.bg, 0.14), strikethrough = true },
+    GrugFarResultsMatch = { fg = c.fg_max, bg = c.search, bold = true },
+    GrugFarResultsMatchAdded = { fg = c.fg_strong, bg = c.diff.add },
+    GrugFarResultsMatchRemoved = { fg = c.fg_strong, bg = c.diff.delete, strikethrough = true },
     GrugFarResultsAddIndicator = { fg = c.git.add },
     GrugFarResultsRemoveIndicator = { fg = c.git.delete },
     GrugFarResultsChangeIndicator = { fg = c.git.change },

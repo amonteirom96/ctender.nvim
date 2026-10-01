@@ -62,7 +62,11 @@ earns a color:
   The light variant is a neutral paper (`#f2f2f2`) with soft graphite
   (`#4b4b4b`); each accent keeps its tender hue and is darkened just enough to
   read on it. Every accent passes **WCAG AA (≥ 4.5:1)** on both the background
-  and the statusline/tab color (`scripts/contrast.lua`).
+  and the statusline/tab color, and so does every group that puts text on its
+  own fill: selection, search, markers, statusline modes (`scripts/contrast.lua`).
+- **The whole tender palette.** All 27 colors, from the accents to `blue5`,
+  `green4`, `red3`, `gandalf` and `darkest`, each with a job (see
+  [Palette](#palette)).
 
 ## Features
 
@@ -246,37 +250,76 @@ require("ctender").setup({
 
 ## Palette
 
-Taken from [tender](https://github.com/jacoborus/tender.vim). Dark uses
-tender's values as they are, except red and teal, lightened just enough to
-pass WCAG AA. tender has no light variant: the light accents keep tender's
-hues and are darkened to pass AA on the paper background. Lime and amber are
-nudged a few degrees (toward green and orange) so that, once darkened, they stay
-apart from tan.
+All 27 colors of [tender](https://github.com/jacoborus/tender.vim)
+(`estilos/palettes/tender.yml`) are in `require("ctender").colors().tender`,
+by tender's own names, and every one of them is used (a test checks this).
+Dark is tender verbatim. tender has no light variant, so light holds the
+counterpart of each color: the same role on a neutral paper background, with
+accents darkened along their own hue until they pass WCAG AA. Lime and amber
+are nudged a few degrees (toward green and orange) so that, once darkened, they
+stay apart from tan.
 
-| Key | Light | Dark | tender | Used for |
+### Accents
+
+| tender | Light | Dark | Key | Used for |
 | --- | --- | --- | --- | --- |
-| `bg` | `#f2f2f2` | `#282828` | bg | background |
-| `fg` | `#4b4b4b` | `#dadada` | pearl | **code** |
-| `yellow` | `#7a612e` | `#d3b987` | yellow1 | **strings**, snippets |
-| `green` | `#506e13` | `#c9d05c` | green1 | **functions**, `accent`, git add, ok |
-| `cyan` | `#096b96` | `#73cef4` | blue2 | **types**, info, kinds (class, struct) |
-| `orange` | `#9e4f00` | `#ffc24b` | yellow2 | **constants and literals**, warnings, substitute |
-| `red` | `#c5152f` | `#f8778a` | red2 / red1 | **errors only**, git delete |
-| `blue` | `#2b5978` | `#b3deef` | blue1 | git change, kinds (field, property), statusline normal |
-| `azure` | `#326d74` | `#70a9b2` | blue3 | hints, kinds (module, keyword), ANSI magenta |
+| `yellow1` | `#7a612e` | `#d3b987` | `yellow` | **strings** |
+| `green1` | `#506e13` | `#c9d05c` | `green` | **functions**, `accent`, git add, ok, insert mode |
+| `blue2` | `#096b96` | `#73cef4` | `cyan` | **types**, info, kinds (class, struct) |
+| `yellow2` | `#9e4f00` | `#ffc24b` | `orange` | **constants and literals**, warnings, visual mode |
+| `blue1` | `#2b5978` | `#b3deef` | `blue` | git change, kinds (field, property), normal mode |
+| `blue3` | `#326d74` | `#44778d` | `azure` | hints, kinds (module, keyword), ANSI magenta, `NOTE` markers, scrollbar thumb |
+| `green2` | `#636a00` | `#9faa00` | `olive` | staged git additions, snippets, checked boxes |
+| `red1` | `#c5152f` | `#f43753` | `red` | **errors only**: undercurls, git delete, replace mode |
+| `red2` | `#a21127` | `#c5152f` | | `FIXME` / `BUG` markers, internal errors |
 
-UI tones are derived from `fg` and `bg` and stay neutral grey like tender's
-chrome (`surface1`, `surface2`, `border`, `muted`, `bg_dim`); only the
-selection (`surface3`, `select`) leans sky blue, like tender's `Visual`.
-`comment` is `fg` faded toward the background, kept above 4.5:1. `muted`
-appears only in UI chrome, such as line numbers and whitespace. It never
-appears in code. `c.code.{string,func,type,constant}` are the only hues used in
-code.
+In dark, two of tender's accents fail AA as text on the background: `red1`
+(3.9:1) and `blue3` (3.0:1). For text, `red` is `#f8778a` and `azure` is
+`#70a9b2`, each lightened just enough. tender's exact values are still used
+where they are not text on the background: undercurls, the Replace block and
+marker fills.
+
+### Tints
+
+| tender | Light | Dark | Used for |
+| --- | --- | --- | --- |
+| `blue5` | `#dbe5e9` | `#293b44` | selection (`Visual`, current item in every list) |
+| `blue4` | `#d2dade` | `#335261` | changed lines (`DiffChange`), text on the Normal block |
+| `green4` | `#d8ddce` | `#464632` | added lines (`DiffAdd`), text on the Insert block |
+| `green3` | `#cad1ba` | `#6a6b3f` | search matches |
+| `red3` | `#ebcfd3` | `#79313c` | deleted lines (`DiffDelete`) |
+| `yellow3` | `#d0c9bb` | `#715b2f` | matching paren |
+
+### Greys
+
+| tender | Light | Dark | Key | Used for |
+| --- | --- | --- | --- | --- |
+| `highlighted` | `#1f1f1f` | `#ffffff` | `fg_max` | text on search matches and markers, ANSI bright white |
+| `text` | `#383838` | `#eeeeee` | `fg_strong` | titles, current line number, selected items, active tab |
+| `pearl` | `#4b4b4b` | `#dadada` | `fg` | **code** |
+| `gandalf` | `#5a5a5a` | `#bbbbbb` | `subtle` | inactive statusline and tabs |
+| `grey1` | `#696969` | `#999999` | `comment` | comments (AA) |
+| `grey2` | `#a8a8a8` | `#666666` | `faint` | invisible characters (`NonText`, `Whitespace`, `EndOfBuffer`) |
+| `grey3` | `#cdcdcd` | `#444444` | `border` | borders and separators |
+| `shadow` | `#eaeaea` | `#323232` | `surface1` | cursorline, color column |
+| `bg` | `#f2f2f2` | `#282828` | `bg` | background |
+| `dark` | `#ececec` | `#202020` | `bg_fold` | folded lines, inactive terminal tabs |
+| `darker` | `#e9e9e9` | `#1d1d1d` | `bg_dim` | inactive windows (`dim_inactive`), terminal tab bar |
+| `darkest` | `#000000` | `#000000` | `shadow` | float shadows, backdrops, text on the Replace block |
+
+Three tones are mixed from tender's colors because no single tender color
+keeps the contrast: `surface2` (statusline, active tab) sits between `shadow`
+and `grey3`, so every accent stays above 4.5:1 on it; `muted` (line numbers)
+sits between `grey1` and `grey2`, since `grey2` is below 3:1; and the strong
+part of a changed line (`DiffText`) sits between `blue3` and `blue4`.
+`muted` appears only in UI chrome and never in code.
+`c.code.{string,func,type,constant}` are the only hues used in code.
 
 Use the palette in your own config:
 
 ```lua
 local c = require("ctender").colors()        -- current variant
+local olive = c.tender.green2                  -- any tender color, by name
 local light = require("ctender").colors("light")
 local groups = require("ctender").highlights("dark")
 ```
@@ -317,9 +360,10 @@ text on colored highlights, so they stay readable in the light theme too.
 ## Development
 
 ```sh
-# contrast check (WCAG AA for every accent, both variants)
+# contrast check (WCAG AA for every accent and every text-on-fill group, both variants)
 nvim --headless -u NONE --cmd "set rtp^=." -l scripts/contrast.lua
-# smoke tests (also checks that red appears only on errors and deletions)
+# smoke tests (also checks that red appears only on errors and deletions,
+# and that all 27 tender colors are used)
 nvim --headless -u NONE --cmd "set rtp^=." -l tests/smoke.lua
 # load-time benchmark
 nvim --headless -u NONE --cmd "set rtp^=." -l scripts/bench.lua

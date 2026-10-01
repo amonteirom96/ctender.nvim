@@ -65,6 +65,22 @@ function M.contrast(a, b)
   return (la + 0.05) / (lb + 0.05)
 end
 
+--- The candidate with the highest contrast on `bg`: text for filled blocks
+--- (markers, statusline modes) that must stay readable in both variants.
+---@param bg string
+---@param ... string
+---@return string
+function M.readable(bg, ...)
+  local best, ratio = nil, 0
+  for _, x in ipairs({ ... }) do
+    local r = M.contrast(x, bg)
+    if r > ratio then
+      best, ratio = x, r
+    end
+  end
+  return best
+end
+
 ---@param dst table
 ---@param src table?
 ---@return table

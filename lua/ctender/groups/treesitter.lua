@@ -2,6 +2,8 @@
 --- Neovim's default links, so we only set what the default colorscheme hard-codes
 --- plus the captures where style or meaning matters.
 
+local util = require("ctender.util")
+
 ---@param c ctender.Colors
 ---@param o ctender.Config
 return function(c, o)
@@ -17,7 +19,7 @@ return function(c, o)
   end
 
   local function marker(color)
-    return { fg = c.bg, bg = color, bold = true }
+    return { fg = util.readable(color, c.bg, c.fg_max), bg = color, bold = true }
   end
 
   return {
@@ -72,17 +74,17 @@ return function(c, o)
     ["@tag.delimiter"] = { fg = fg },
 
     -- Comment markers. Red only for FIXME/BUG (errors).
-    ["@comment.error"] = marker(c.red),
+    ["@comment.error"] = marker(c.tender.red2),
     ["@comment.warning"] = marker(c.diag.warn),
     ["@comment.todo"] = marker(c.accent),
-    ["@comment.note"] = marker(c.cyan),
+    ["@comment.note"] = marker(c.tender.blue3),
 
     -- Markup
     ["@markup.strong"] = { bold = true },
     ["@markup.italic"] = { italic = true },
     ["@markup.strikethrough"] = { strikethrough = true },
     ["@markup.underline"] = { underline = true },
-    ["@markup.heading"] = { fg = fg, bold = true },
+    ["@markup.heading"] = { fg = c.fg_strong, bold = true },
     ["@markup.heading.1.delimiter.vimdoc"] = { fg = c.muted },
     ["@markup.heading.2.delimiter.vimdoc"] = { fg = c.muted },
     ["@markup.quote"] = { fg = fg, italic = true },
@@ -93,7 +95,7 @@ return function(c, o)
     ["@markup.raw"] = { fg = fg, bg = c.surface1 },
     ["@markup.raw.block"] = { fg = fg },
     ["@markup.list"] = { fg = fg, bold = true },
-    ["@markup.list.checked"] = { fg = c.green },
+    ["@markup.list.checked"] = { fg = c.olive },
     ["@markup.list.unchecked"] = { fg = c.muted },
 
     ["@diff.plus"] = { fg = c.git.add },

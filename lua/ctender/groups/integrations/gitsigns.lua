@@ -19,7 +19,7 @@ return function(c, o)
   }
 
   for kind, color in pairs(sets) do
-    local tint = blend(color, c.bg, 0.14)
+    local tint = blend(color, c.bg, 0.09)
     local ln = blend(color, c.bg, kind == "Change" and 0.10 or 0.13)
     local g = "GitSigns" .. kind
     hl[g] = { fg = color }
@@ -31,13 +31,14 @@ return function(c, o)
     hl[g .. "LnInline"] = { bg = blend(color, c.bg, 0.30) }
     hl[g .. "VirtLn"] = { bg = ln }
     hl[g .. "VirtLnInline"] = { bg = blend(color, c.bg, 0.30) }
-    -- staged: same hue, quieter
-    local staged = blend(color, c.bg, 0.55)
+    -- staged: same hue, quieter. Staged additions take tender's olive
+    -- (green2, its gitcommitSelectedType).
+    local staged = (kind == "Add" or kind == "Untracked") and c.git.staged or blend(color, c.bg, 0.72)
     hl["GitSignsStaged" .. kind] = { fg = staged }
     hl["GitSignsStaged" .. kind .. "Nr"] = { fg = staged, bg = blend(color, c.bg, 0.07) }
     hl["GitSignsStaged" .. kind .. "Ln"] = { bg = blend(color, c.bg, 0.07) }
   end
-  hl.GitSignsDeleteVirtLn = { fg = c.git.delete, bg = blend(c.git.delete, c.bg, 0.13) }
+  hl.GitSignsDeleteVirtLn = { fg = c.fg_strong, bg = c.diff.delete }
 
   return hl
 end

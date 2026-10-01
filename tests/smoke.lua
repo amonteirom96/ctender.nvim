@@ -70,8 +70,9 @@ for _, v in ipairs({ "light", "dark" }) do
     healthError = true, RedrawDebugRecompose = true, MasonError = true, LazyTaskError = true,
     ["@comment.error"] = true, StModeReplace = true, StModeReplaceSep = true, ["@lsp.type.unresolvedReference"] = true,
   }
+  local reds = { [c.red] = true, [c.tender.red1] = true, [c.tender.red2] = true, [c.tender.red3] = true }
   for n, spec in pairs(ex.highlights(v)) do
-    local red = spec.fg == c.red or spec.bg == c.red or spec.sp == c.red
+    local red = reds[spec.fg] or reds[spec.bg] or reds[spec.sp]
     local meaning = n:find("Error") or n:find("Delete") or n:find("Removed") or n:find("Remove") or n:find("[Dd]iff") or n:find("minus") or n:find("Topdelete")
     check(not red or allowed[n] or meaning, ("%s: %s uses red outside errors/deletions"):format(v, n))
   end
@@ -97,6 +98,33 @@ for _, v in ipairs({ "light", "dark" }) do
   end
   for i = 1, 6 do
     check(contrast(a[0], a[i]) >= 4.5, ("%s: ansi 0 readable on ansi %d"):format(v, i))
+  end
+end
+
+-- every one of tender's 27 colors is used, in both variants (highlights,
+-- :terminal colors or the generated extras)
+for _, v in ipairs({ "light", "dark" }) do
+  local c = ex.colors(v)
+  local used = {}
+  for _, spec in pairs(ex.highlights(v)) do
+    for _, k in ipairs({ "fg", "bg", "sp" }) do
+      if spec[k] then
+        used[spec[k]] = true
+      end
+    end
+  end
+  local ansi = require("ctender.terminal").ansi(c)
+  for i = 0, 15 do
+    used[ansi[i]] = true
+  end
+  for _, mod in pairs(require("ctender.extras").tools) do
+    for hex in require(mod).render(c, ansi, "x"):gmatch("#%x%x%x%x%x%x") do
+      used[hex] = true
+    end
+  end
+  check(vim.tbl_count(c.tender) == 27, v .. ": tender has 27 colors")
+  for name, hex in pairs(c.tender) do
+    check(used[hex], ("%s: tender %s (%s) is not used"):format(v, name, hex))
   end
 end
 
