@@ -1,0 +1,124 @@
+-- nvim --headless -u NONE --cmd "set rtp^=." -l tests/smoke.lua
+local ok_all = true
+local function check(cond, msg)
+  if not cond then ok_all = false; print("FAIL: " .. msg) end
+end
+
+vim.env.XDG_CACHE_HOME = vim.fn.tempname()
+local ex = require("ctender")
+
+for _, name in ipairs({ "ctender-light", "ctender-dark", "ctender" }) do
+  local ok, err = pcall(vim.cmd.colorscheme, name)
+  check(ok, name .. ": " .. tostring(err))
+  check(vim.g.colors_name == name, name .. ": colors_name=" .. tostring(vim.g.colors_name))
+  local normal = vim.api.nvim_get_hl(0, { name = "Normal" })
+  check(normal.fg and normal.bg, name .. ": Normal has fg/bg")
+  -- code is fg, except strings (tan), functions (lime), types (sky) and constants (amber)
+  local c = ex.colors(vim.o.background)
+  local want = {
+    String = c.yellow, ["@string"] = c.yellow,
+    Function = c.green, ["@function.call"] = c.green, ["@function.method"] = c.green,
+    Type = c.cyan, ["@type"] = c.cyan, ["@type.builtin"] = c.cyan, ["@constructor"] = c.cyan,
+    Number = c.orange, Boolean = c.orange, ["@constant"] = c.orange, ["@constant.builtin"] = c.orange, ["@number"] = c.orange,
+  }
+  want.Comment, want["@comment"] = c.comment, c.comment
+  for _, g in ipairs({ "Keyword", "@variable", "@keyword", "@property", "@module", "@operator" }) do
+    want[g] = c.fg
+  end
+  for g, color in pairs(want) do
+    local h = vim.api.nvim_get_hl(0, { name = g, link = false })
+    check(h.fg == tonumber(color:sub(2), 16), ("%s: %s fg %s ~= %s"):format(name, g, tostring(h.fg), color))
+  end
+  -- color where it matters
+  local add = vim.api.nvim_get_hl(0, { name = "GitSignsAdd" }).fg
+  local del = vim.api.nvim_get_hl(0, { name = "GitSignsDelete" }).fg
+  check(add and del and add ~= del and add ~= normal.fg, name .. ": gitsigns colored")
+  check(vim.api.nvim_get_hl(0, { name = "BlinkCmpKindFunction" }).fg ~= vim.api.nvim_get_hl(0, { name = "BlinkCmpKindVariable" }).fg, name .. ": kinds differ")
+  -- kinds use the same colors as the code
+  for kind, group in pairs({ Function = "@function", String = "@string", Class = "@type", Constant = "@constant" }) do
+    local k = vim.api.nvim_get_hl(0, { name = "BlinkCmpKind" .. kind }).fg
+    local g = vim.api.nvim_get_hl(0, { name = group, link = false }).fg
+    check(k == g, ("%s: BlinkCmpKind%s matches %s"):format(name, kind, group))
+  end
+  check(vim.api.nvim_get_hl(0, { name = "MiniIconsRed" }).fg ~= nil, name .. ": mini.icons")
+  check(vim.g.terminal_color_1 ~= nil, name .. ": terminal colors")
+end
+
+-- background switch follows for "ctender"
+vim.cmd.colorscheme("ctender")
+vim.o.background = "light"
+local light_bg = vim.api.nvim_get_hl(0, { name = "Normal" }).bg
+check(light_bg == tonumber(ex.colors("light").bg:sub(2), 16), "auto variant follows background=light")
+vim.o.background = "dark"
+check(vim.api.nvim_get_hl(0, { name = "Normal" }).bg == tonumber(ex.colors("dark").bg:sub(2), 16), "auto variant follows background=dark")
+
+-- cache written and setup invalidates key
+local dir = vim.fn.stdpath("cache") .. "/ctender"
+check(#vim.fn.readdir(dir) >= 3, "cache files exist")
+ex.setup({ transparent = true })
+vim.cmd.colorscheme("ctender-dark")
+check(vim.api.nvim_get_hl(0, { name = "Normal" }).bg == nil, "transparent applied after setup")
+ex.setup({ on_highlights = function(hl) hl.Normal.fg = "#ff0000" end })
+vim.cmd.colorscheme("ctender-dark")
+check(vim.api.nvim_get_hl(0, { name = "Normal" }).fg == 0xff0000, "on_highlights applied")
+
+-- red is reserved for errors: nothing in code or kinds/icons uses it
+for _, v in ipairs({ "light", "dark" }) do
+  local c = ex.colors(v)
+  local allowed = {
+    Error = true, ErrorMsg = true, StderrMsg = true, NvimInternalError = true, SpellBad = true,
+    healthError = true, RedrawDebugRecompose = true, MasonError = true, LazyTaskError = true,
+    ["@comment.error"] = true, StModeReplace = true, StModeReplaceSep = true, ["@lsp.type.unresolvedReference"] = true,
+  }
+  for n, spec in pairs(ex.highlights(v)) do
+    local red = spec.fg == c.red or spec.bg == c.red or spec.sp == c.red
+    local meaning = n:find("Error") or n:find("Delete") or n:find("Removed") or n:find("Remove") or n:find("[Dd]iff") or n:find("minus") or n:find("Topdelete")
+    check(not red or allowed[n] or meaning, ("%s: %s uses red outside errors/deletions"):format(v, n))
+  end
+  check(c.purple == nil, v .. ": no purple in the palette")
+  -- the four code hues must be told apart at a glance
+  local hues = { c.code.string, c.code.func, c.code.type, c.code.constant }
+  for i = 1, #hues do
+    for j = i + 1, #hues do
+      check(hues[i] ~= hues[j], ("%s: code hues %d and %d differ"):format(v, i, j))
+    end
+  end
+  check(c.comment ~= c.fg and require("ctender.util").contrast(c.comment, c.bg) >= 4.5, v .. ": comment dimmer than fg, still AA")
+end
+
+-- ANSI: TUIs draw borders/text in white and put black text on colored
+-- highlights (lazysql, htop), so both must stay readable in both variants
+for _, v in ipairs({ "light", "dark" }) do
+  local c = ex.colors(v)
+  local a = require("ctender.terminal").ansi(c)
+  local contrast = require("ctender.util").contrast
+  for _, i in ipairs({ 7, 15 }) do
+    check(contrast(a[i], c.bg) >= 4.5, ("%s: ansi %d readable on bg"):format(v, i))
+  end
+  for i = 1, 6 do
+    check(contrast(a[0], a[i]) >= 4.5, ("%s: ansi 0 readable on ansi %d"):format(v, i))
+  end
+end
+
+-- mono = true: pure monochrome
+ex.setup({ mono = true })
+vim.cmd.colorscheme("ctender-dark")
+local nfg = vim.api.nvim_get_hl(0, { name = "Normal" }).fg
+check(vim.api.nvim_get_hl(0, { name = "String", link = false }).fg == nfg, "mono: String in fg")
+check(vim.api.nvim_get_hl(0, { name = "@function.call", link = false }).fg == nfg, "mono: @function.call in fg")
+check(vim.api.nvim_get_hl(0, { name = "@type", link = false }).fg == nfg, "mono: @type in fg")
+check(vim.api.nvim_get_hl(0, { name = "@constant.builtin", link = false }).fg == nfg, "mono: @constant.builtin in fg")
+ex.setup({})
+
+-- highlights never produce invalid specs
+for _, v in ipairs({ "light", "dark" }) do
+  for n, spec in pairs(ex.highlights(v)) do
+    for _, k in ipairs({ "fg", "bg", "sp" }) do
+      local x = spec[k]
+      check(x == nil or x == "NONE" or (type(x) == "string" and x:match("^#%x%x%x%x%x%x$")), ("%s %s.%s=%s"):format(v, n, k, tostring(x)))
+    end
+  end
+end
+
+print(ok_all and "ALL OK" or "FAILURES")
+if not ok_all then os.exit(1) end

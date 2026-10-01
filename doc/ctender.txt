@@ -1,0 +1,137 @@
+*ctender.txt*    tender, quieted down. Four hues for code, red for errors.
+
+==============================================================================
+CONTENTS                                                   *ctender-contents*
+
+  1. Introduction ............................ |ctender-introduction|
+  2. Usage ................................... |ctender-usage|
+  3. Configuration ........................... |ctender-config|
+  4. Commands ................................ |ctender-commands|
+  5. API ..................................... |ctender-api|
+  6. Extras .................................. |ctender-extras|
+
+==============================================================================
+1. INTRODUCTION                                        *ctender-introduction*
+
+ctender is a quiet take on the tender palette (jacoborus/tender.vim), with a
+light variant added. Code uses a single foreground color, except strings
+(tan), functions (lime), types (sky) and constants/literals (amber), the hues
+tender gives them under treesitter. Keywords and comments are told apart by
+style (bold keywords; italic comments a step dimmer than the code, still WCAG
+AA), not by hue.
+Red is reserved for errors and git deletions; there is no purple or pink.
+Color is otherwise used only where it carries meaning:
+
+  - git: add = lime, change = pale blue, delete = red
+  - diagnostics: error, warn, info, hint, ok
+  - LSP completion and symbol kinds (blink.cmp, dropbar)
+  - file icons (mini.icons)
+  - search and TODO/FIXME/NOTE markers
+
+Highlights are compiled to LuaJIT bytecode and cached, so a cached load takes
+a few milliseconds.
+
+==============================================================================
+2. USAGE                                                      *ctender-usage*
+
+>lua
+    require("ctender").setup({})   -- optional
+    vim.cmd.colorscheme("ctender")
+<
+                                  *ctender* *ctender-light* *ctender-dark*
+  ctender         follows 'background' (or the `variant` option)
+  ctender-light   always light
+  ctender-dark    always dark
+
+Neovim detects the terminal background at startup. When you use `ctender`,
+the theme follows the terminal and switches when 'background' changes.
+
+==============================================================================
+3. CONFIGURATION                                             *ctender-config*
+
+Defaults:
+>lua
+    require("ctender").setup({
+      variant = "auto",        -- "auto" | "light" | "dark"
+      transparent = false,
+      terminal_colors = true,
+      dim_inactive = false,
+      muted_comments = false,
+      mono = false,            -- all code in fg
+      float = { solid = false },
+      styles = {
+        comments = { italic = true },
+        keywords = { bold = true },
+        functions = {}, variables = {}, strings = {},
+        types = {}, constants = {}, operators = {},
+      },
+      integrations = {
+        blink = true, dropbar = true, gitsigns = true, grug_far = true,
+        lazy = true, mason = true, mini = true,
+        semantic_tokens = true, statusline = true, treesitter = true,
+      },
+      cache = true,
+      on_colors = nil,         -- fun(colors, variant)
+      on_highlights = nil,     -- fun(hl, colors, variant)
+    })
+<
+                                                          *ctender-on_colors*
+on_colors(colors, variant)
+    Change the palette before highlights are built. Keys: `bg`, `fg`, `red`,
+    `orange`, `yellow`, `green`, `cyan`, `azure`, `blue`, `accent`,
+    `surface1`, `surface2`, `surface3`, `select`, `border`, `muted`, `comment`,
+    `bg_dim`, `bg_float`, `code.{string,func,type,constant}`,
+    `git.{add,change,delete}`, `diag.{error,warn,info,hint,ok}`.
+
+                                                               *ctender-mono*
+mono
+    When true, strings, functions, types and constants use `fg` like the
+    rest of the code.
+
+                                                      *ctender-on_highlights*
+on_highlights(hl, colors, variant)
+    Change or add highlight groups. `hl` maps group names to
+    |nvim_set_hl()| specs, with colors as "#rrggbb" strings.
+
+The compiled cache is keyed by a hash of your options, so changes take effect
+on the next `:colorscheme`. The hash covers function bodies but not captured
+upvalues. If you change such a value, run |:CtenderCompile|.
+
+==============================================================================
+4. COMMANDS                                                *ctender-commands*
+
+                                                            *:CtenderCompile*
+:CtenderCompile       Delete and rebuild the compiled cache, then reload.
+
+                                                         *:CtenderClearCache*
+:CtenderClearCache    Delete the compiled cache.
+
+                                                             *:CtenderExtras*
+:CtenderExtras [dir]  Write the Ghostty, Kitty and Lazygit themes to [dir]
+                        (default: the plugin's `extras/` directory).
+
+==============================================================================
+5. API                                                          *ctender-api*
+
+require("ctender").setup({opts})         Configure.
+require("ctender").load({name})          Apply a colorscheme by name.
+require("ctender").colors({variant})     Return the full palette.
+require("ctender").highlights({variant}) Return the final highlight table.
+require("ctender").compile()             Same as |:CtenderCompile|.
+require("ctender").clear_cache()         Same as |:CtenderClearCache|.
+require("ctender").extras({dir})         Same as |:CtenderExtras|.
+
+==============================================================================
+6. EXTRAS                                                    *ctender-extras*
+
+extras/ghostty/ctender-{light,dark}
+    Copy to ~/.config/ghostty/themes/ and set:
+    `theme = light:ctender-light,dark:ctender-dark`
+
+extras/kitty/ctender-{light,dark}.conf
+    Copy to ~/.config/kitty/{light,dark}-theme.auto.conf.
+
+extras/lazygit/ctender-{light,dark}.yml
+    Merge into config.yml, or append to LG_CONFIG_FILE.
+
+ vim:tw=78:ts=8:ft=help:norl:
